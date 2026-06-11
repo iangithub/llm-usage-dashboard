@@ -1,0 +1,7 @@
+{
+  "_comment": "把這個檔複製成 pricing.json 即可覆寫預設模型單價。單位:USD / 1,000,000 tokens。key 以模型 id 子字串比對,最長相符者優先。只需列出想覆寫的項目。",
+  "gpt-5": { "input": 1.25, "output": 10, "cacheWrite": 1.25, "cacheRead": 0.125 },
+  "codex": { "input": 1.25, "output": 10, "cacheWrite": 1.25, "cacheRead": 0.125 },
+  "claude-opus": { "input": 15, "output": 75, "cacheWrite": 18.75, "cacheRead": 1.5 },
+  "claude-sonnet": { "input": 3, "output": 15, "cacheWrite": 3.75, "cacheRead": 0.3 }
+}

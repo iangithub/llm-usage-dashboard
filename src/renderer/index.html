@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline';" />
+  <title>AI Usage Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo"></span>
+      <h1>AI Usage Dashboard</h1>
+    </div>
+    <div class="actions">
+      <label class="toggle"><input type="checkbox" id="autostart" /> <span>開機自動啟動</span></label>
+      <span id="updated" class="updated">—</span>
+      <span id="nextauto" class="updated"></span>
+      <button id="refresh" class="btn">重新整理</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="totals" id="totals">
+      <div class="total-card"><div class="t-label">本月預估花費</div><div class="t-value" id="t-cost">$0.00</div></div>
+      <div class="total-card"><div class="t-label">本月總 Tokens</div><div class="t-value" id="t-tokens">0</div></div>
+      <div class="total-card"><div class="t-label">累計花費(估)</div><div class="t-value" id="t-all">$0.00</div></div>
+    </section>
+
+    <section class="providers">
+      <article class="card" id="card-codex">
+        <div class="card-head">
+          <h2>Codex <span class="sub">(OpenAI)</span></h2>
+          <span class="head-right">
+            <span class="badge badge-codex" id="codex-plan">plan</span>
+            <button class="launch launch-codex" data-tool="codex" title="啟動 Codex">▶ 啟動</button>
+          </span>
+        </div>
+        <div class="limits" id="codex-limits"></div>
+        <div class="stat-row">
+          <div class="stat"><span class="s-label">今日</span><span class="s-val" id="codex-today">0</span></div>
+          <div class="stat"><span class="s-label">本月 tokens</span><span class="s-val" id="codex-month">0</span></div>
+          <div class="stat"><span class="s-label">本月花費</span><span class="s-val" id="codex-cost">$0</span></div>
+        </div>
+        <div class="note" id="codex-note"></div>
+      </article>
+
+      <article class="card" id="card-claude">
+        <div class="card-head">
+          <h2>Claude Code <span class="sub">(Anthropic)</span></h2>
+          <span class="head-right">
+            <span class="badge badge-claude" id="claude-plan">plan</span>
+            <button class="launch launch-claude" data-tool="claude" title="啟動 Claude">▶ 啟動</button>
+          </span>
+        </div>
+        <div class="limits" id="claude-limits"></div>
+        <div class="stat-row">
+          <div class="stat"><span class="s-label">今日</span><span class="s-val" id="claude-today">0</span></div>
+          <div class="stat"><span class="s-label">本月 tokens</span><span class="s-val" id="claude-month">0</span></div>
+          <div class="stat"><span class="s-label">本月花費</span><span class="s-val" id="claude-cost">$0</span></div>
+        </div>
+        <div class="note" id="claude-note">Claude 本地不儲存官方額度,以下為依用量重建之估算視窗。</div>
+      </article>
+
+      <article class="card" id="card-antigravity">
+        <div class="card-head">
+          <h2>Antigravity <span class="sub">(Google)</span></h2>
+          <span class="head-right">
+            <span class="badge badge-antigravity" id="antigravity-plan">plan</span>
+            <button class="launch launch-antigravity" data-tool="antigravity" title="啟動 Antigravity">▶ 啟動</button>
+          </span>
+        </div>
+        <div class="limits" id="antigravity-limits"></div>
+        <div class="stat-row">
+          <div class="stat"><span class="s-label">方案</span><span class="s-val" id="antigravity-plan-name">—</span></div>
+          <div class="stat"><span class="s-label">剩餘 Prompts</span><span class="s-val" id="antigravity-available-credits">—</span></div>
+          <div class="stat"><span class="s-label">剩餘 Flows</span><span class="s-val" id="antigravity-available-flows">—</span></div>
+        </div>
+        <div class="note" id="antigravity-note">額度與模型配額為 Antigravity 官方伺服器實時數據。</div>
+      </article>
+    </section>
+
+    <section class="card chart-card">
+      <div class="card-head"><h2>近 14 天每日用量</h2><span class="legend"><i class="dot dot-codex"></i>Codex <i class="dot dot-claude"></i>Claude <i class="dot dot-antigravity"></i>Antigravity</span></div>
+      <div id="chart" class="chart"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-head"><h2>各專案用量</h2><span class="hint" id="proj-count"></span></div>
+      <table class="projects">
+        <thead>
+          <tr><th>專案</th><th>來源</th><th class="num">累計 Tokens</th><th class="num">本月 Tokens</th><th class="num">本月花費(估)</th><th>最後活動</th></tr>
+        </thead>
+        <tbody id="proj-body"></tbody>
+      </table>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
