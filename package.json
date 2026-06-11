@@ -1,0 +1,83 @@
+{
+  "name": "llm-usage-dashboard",
+  "version": "0.1.1",
+  "description": "Local desktop dashboard for Codex (OpenAI) and Claude Code subscription usage, limits and cost",
+  "main": "src/main/main.js",
+  "bin": {
+    "llm-usage-dashboard": "bin/cli.js"
+  },
+  "author": "ianchen",
+  "license": "MIT",
+  "homepage": "https://github.com/iangithub/llm-usage-dashboard#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iangithub/llm-usage-dashboard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/iangithub/llm-usage-dashboard/issues"
+  },
+  "keywords": [
+    "codex",
+    "claude",
+    "claude-code",
+    "openai",
+    "anthropic",
+    "usage",
+    "quota",
+    "rate-limit",
+    "dashboard",
+    "token",
+    "electron"
+  ],
+  "files": [
+    "src/**/*",
+    "assets/**/*",
+    "bin/**/*",
+    "README.md"
+  ],
+  "scripts": {
+    "start": "electron .",
+    "cli": "node src/main/cli-render.js",
+    "probe": "node src/main/probe.js",
+    "icon": "node assets/genicon.js",
+    "pack": "node scripts/build-pack.js",
+    "dist": "electron-builder --win nsis portable"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "build": {
+    "appId": "com.ianchen.aiusagedashboard",
+    "productName": "AI Usage Dashboard",
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "!**/*.map"
+    ],
+    "win": {
+      "target": [
+        { "target": "nsis", "arch": ["x64"] },
+        { "target": "portable", "arch": ["x64"] }
+      ],
+      "icon": "assets/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "AI Usage Dashboard"
+    },
+    "portable": {
+      "artifactName": "AI-Usage-Dashboard-Portable-${version}.exe"
+    }
+  },
+  "dependencies": {
+    "electron": "^33.0.0"
+  },
+  "devDependencies": {
+    "@electron/packager": "^18.3.0",
+    "electron-builder": "^25.0.0"
+  }
+}
