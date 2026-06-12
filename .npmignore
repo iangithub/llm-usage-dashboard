@@ -1,0 +1,18 @@
+# Build output (never publish these to npm)
+dist/
+dist-pack/
+marks/
+scripts/
+*.log
+*.tgz
+
+# Dev / verification scratch
+*.tmp
+*.txt
+assets/pricing.json
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
