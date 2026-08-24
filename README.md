@@ -32,17 +32,19 @@ llm-usage-dashboard
 | 區塊 | 內容 |
 |------|------|
 | **總覽** | 本月預估花費、本月總 tokens、累計花費 |
-| **Codex 卡片** | 5 小時 / 每週額度（官方精確 `used_percent` + 重置倒數）、方案、今日 / 本月 tokens、本月花費估算 |
+| **Codex 卡片** | Codex 回報的每個額度視窗（官方精確 `used_percent` + 重置倒數，視窗長度依 `window_minutes` 標示）、方案、今日 / 本月 tokens、本月花費估算 |
 | **Claude Code 卡片** | 5 小時區塊 / 近 7 天用量（依 token 記錄重建）、方案、今日 / 本月 tokens、本月花費估算 |
 | **近 14 天圖** | 每日 Codex / Claude tokens 堆疊長條圖 |
+| **月報** | 「每日 × 每專案」矩陣：整個月每一天、每一個專案的用量與花費，可切換月份 / Tokens 或花費 / 來源，並匯出 CSV |
 | **各專案用量** | 每個專案（依工作目錄）的來源、累計 / 本月 tokens、本月花費、最後活動時間 |
 
 ### 重點功能
 
 - 🔒 **純本機、不連網**：只讀取你電腦上 Codex / Claude Code 自己產生的紀錄檔，不上傳、不需 API key。
-- 🟢 **Codex 額度為官方精確值**：直接讀取 Codex 寫入的 `rate_limits`（5 小時與每週的 `used_percent` + 重置時間）。
+- 🟢 **Codex 額度為官方精確值**：直接讀取 Codex 寫入的 `rate_limits`（`used_percent` + 重置時間）。視窗名稱一律依 Codex 回報的 `window_minutes` 決定 —— 不同版本的 Codex 會把 5 小時或每週視窗放在同一個欄位，寫死欄位名稱會標錯。
 - 📈 **各專案分項**：自動依工作目錄歸戶，看出哪個專案吃掉最多額度。
-- 💵 **花費估算**：依模型單價把 token 換算成約略美金成本（訂閱制非實際帳單，僅供參考）。
+- 🗓 **月報（每日 × 每專案）**：一張矩陣看完整個月——橫軸是日期、縱軸是專案，格子顏色代表當日用量強度，滑過可看該日的 tokens / 花費 / 請求次數。可切換月份、Tokens／花費、全部／Codex／Claude，並一鍵匯出 CSV（含 UTF-8 BOM，Excel 直接開）。
+- 💵 **花費估算**：依模型單價把 token 換算成約略美金成本（訂閱制非實際帳單，僅供參考）。單價取自 [Anthropic](https://platform.claude.com/docs/en/about-claude/pricing) 與 [OpenAI](https://developers.openai.com/api/docs/pricing) 官方定價頁（2026-08-24 核對），分別以「未命中輸入 / 輸出 / 5 分鐘快取寫入 / 1 小時快取寫入 / 快取命中」五種費率計算。單價表沒有的新模型會在畫面上明確標示，不會默默以 $0 計入。
 - 🔄 **常駐 + 自動更新**：縮到系統匣常駐，檔案變動即時刷新，另每 5 分鐘自動拉取一次。
 - 🚀 **開機自動啟動**：一個勾選即可隨 Windows 開機背景啟動。
 

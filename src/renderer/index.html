@@ -27,6 +27,8 @@
       <div class="total-card"><div class="t-label">累計花費(估)</div><div class="t-value" id="t-all">$0.00</div></div>
     </section>
 
+    <div class="warn" id="pricing-warn" hidden></div>
+
     <section class="providers">
       <article class="card" id="card-codex">
         <div class="card-head">
@@ -60,6 +62,29 @@
     <section class="card chart-card">
       <div class="card-head"><h2>近 14 天每日用量</h2><span class="legend"><i class="dot dot-codex"></i>Codex <i class="dot dot-claude"></i>Claude</span></div>
       <div id="chart" class="chart"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>月報 <span class="sub">每日 × 每專案</span></h2>
+        <div class="rp-controls">
+          <div class="rp-month">
+            <button id="rp-prev" class="btn btn-sm" title="上個月">◀</button>
+            <select id="rp-month" aria-label="月份"></select>
+            <button id="rp-next" class="btn btn-sm" title="下個月">▶</button>
+          </div>
+          <div class="seg" id="rp-metric">
+            <button data-v="tokens" class="on">Tokens</button><button data-v="cost">花費</button>
+          </div>
+          <div class="seg" id="rp-provider">
+            <button data-v="all" class="on">全部</button><button data-v="codex">Codex</button><button data-v="claude">Claude</button>
+          </div>
+          <button id="rp-csv" class="btn btn-sm">匯出 CSV</button>
+        </div>
+      </div>
+      <div class="rp-summary" id="rp-summary"></div>
+      <div class="rp-scroll"><table class="rp-table" id="rp-table"></table></div>
+      <div class="note" id="rp-note"></div>
     </section>
 
     <section class="card">

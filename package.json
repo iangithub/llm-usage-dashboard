@@ -1,6 +1,6 @@
 {
   "name": "llm-usage-dashboard",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Local desktop dashboard for Codex (OpenAI) and Claude Code subscription usage, limits and cost",
   "main": "src/main/main.js",
   "bin": {
@@ -37,6 +37,7 @@
   ],
   "scripts": {
     "start": "electron .",
+    "test": "node scripts/selftest.js",
     "probe": "node src/main/probe.js",
     "icon": "node assets/genicon.js",
     "pack": "node scripts/build-pack.js",

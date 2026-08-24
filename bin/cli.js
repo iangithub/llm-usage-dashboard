@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
-// Launcher so the app can be run via `npx ai-usage-dashboard` or, after
-// `npm i -g ai-usage-dashboard`, simply `ai-usage-dashboard`.
+// Launcher so the app can be run via `npx llm-usage-dashboard` or, after
+// `npm i -g llm-usage-dashboard`, simply `llm-usage-dashboard`.
 // `require('electron')` resolves to the Electron binary path when run from Node.
 const { spawn } = require('child_process');
 const path = require('path');
@@ -10,7 +10,7 @@ let electronPath;
 try {
   electronPath = require('electron');
 } catch (e) {
-  console.error('找不到 Electron。請先安裝:npm i -g ai-usage-dashboard(或在專案內 npm install)。');
+  console.error('找不到 Electron。請先安裝:npm i -g llm-usage-dashboard(或在專案內 npm install)。');
   process.exit(1);
 }
 

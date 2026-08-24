@@ -92,3 +92,67 @@ table.projects tr:hover td { background: var(--panel2); }
 .src-codex { background: rgba(52,211,153,.15); color: var(--codex); }
 .src-claude { background: rgba(251,146,60,.15); color: var(--claude); }
 .hint, .updated { font-size: 12px; color: var(--muted); }
+
+/* pricing coverage warning (shown when a model has no price entry) */
+.warn {
+  margin: 0 0 14px;
+  padding: 10px 14px;
+  border: 1px solid #7a5a1e;
+  background: #2a2110;
+  color: #f0c674;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.warn[hidden] { display: none; }
+
+/* ---- monthly report (day x project matrix) -------------------------------- */
+.rp-controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.rp-month { display: flex; align-items: center; gap: 4px; }
+.rp-month select {
+  background: var(--panel2); color: var(--text); border: 1px solid var(--line);
+  border-radius: 8px; padding: 6px 8px; font-size: 13px; font-family: inherit;
+}
+.btn-sm { padding: 5px 10px; font-size: 12px; }
+.btn:disabled { opacity: .4; cursor: default; border-color: var(--line); }
+
+.seg { display: flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.seg button {
+  background: var(--panel2); color: var(--muted); border: 0; border-right: 1px solid var(--line);
+  padding: 6px 11px; font-size: 12px; cursor: pointer; font-family: inherit;
+}
+.seg button:last-child { border-right: 0; }
+.seg button:hover { color: var(--text); }
+.seg button.on { background: var(--blue); color: #0b1220; font-weight: 600; }
+
+.rp-summary { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 12px; font-size: 12px; color: var(--muted); }
+.rp-summary b { color: var(--text); font-size: 14px; font-weight: 650; margin-left: 5px; }
+
+.rp-scroll { overflow-x: auto; overflow-y: auto; max-height: 460px; border: 1px solid var(--line); border-radius: 8px; }
+table.rp-table { border-collapse: separate; border-spacing: 0; font-size: 12px; width: max-content; min-width: 100%; }
+table.rp-table th, table.rp-table td { padding: 6px 8px; white-space: nowrap; border-bottom: 1px solid var(--panel2); }
+table.rp-table thead th {
+  position: sticky; top: 0; z-index: 2;
+  background: var(--panel2); color: var(--muted); font-weight: 500;
+  border-bottom: 1px solid var(--line);
+}
+/* project name column stays put while the 31 day columns scroll */
+table.rp-table .rp-name {
+  position: sticky; left: 0; z-index: 1; background: var(--panel);
+  text-align: left; min-width: 190px; max-width: 260px;
+  overflow: hidden; text-overflow: ellipsis;
+  border-right: 1px solid var(--line);
+}
+table.rp-table thead .rp-name { z-index: 3; background: var(--panel2); }
+table.rp-table .rp-day { text-align: right; min-width: 46px; font-variant-numeric: tabular-nums; }
+table.rp-table .rp-sum { text-align: right; font-weight: 650; background: rgba(96,165,250,.07); font-variant-numeric: tabular-nums; }
+table.rp-table thead .rp-weekend { color: var(--claude); }
+table.rp-table .rp-today { box-shadow: inset 0 0 0 1px rgba(96,165,250,.55); }
+table.rp-table .rp-zero { color: #3d4356; }
+table.rp-table tbody tr:hover .rp-name { background: var(--panel2); }
+table.rp-table tfoot td {
+  position: sticky; bottom: 0; z-index: 2;
+  background: var(--panel2); font-weight: 650; border-top: 1px solid var(--line);
+}
+table.rp-table tfoot .rp-name { z-index: 3; }
+.rp-empty { padding: 26px; text-align: center; color: var(--muted); }

@@ -1,16 +1,18 @@
 'use strict';
-const { app, BrowserWindow, Tray, Menu, ipcMain, nativeImage, shell } = require('electron');
+const { app, BrowserWindow, Tray, Menu, ipcMain, nativeImage, shell, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
 const { collectCodex } = require('./collectors/codex');
 const { collectClaude } = require('./collectors/claude');
-const { buildModel } = require('./aggregate');
+const { buildModel, buildMonthlyReport } = require('./aggregate');
+const { reportToCsv } = require('./csv');
 const P = require('./paths');
 
 let win = null;
 let tray = null;
 let latestModel = null;
+let latestEvents = []; // kept so monthly reports can be rebuilt without re-reading disk
 let refreshing = false;
 let pending = false;
 
@@ -86,11 +88,15 @@ function cleanupStaleAutostart() {
 async function refresh(reason = 'manual') {
   if (refreshing) { pending = true; return latestModel; }
   refreshing = true;
+  // Armed before the work, not after it: when this sat inside the try block a
+  // single transient read error killed the 5-minute timer for good, leaving the
+  // app in the tray showing stale numbers with no way back.
+  armAuto();
   try {
     const [codex, claude] = await Promise.all([collectCodex(), collectClaude()]);
+    latestEvents = [...(codex.events || []), ...(claude.events || [])];
     latestModel = buildModel({ codex, claude });
     latestModel.reason = reason;
-    armAuto();
     latestModel.nextAutoRefreshAt = nextAutoAt;
     latestModel.autoRefreshMs = AUTO_REFRESH_MS;
     broadcast();
@@ -111,18 +117,31 @@ function broadcast() {
 }
 
 function fmtPct(n) { return (n == null) ? '—' : Math.round(n) + '%'; }
+// Codex reports the length of each rate-limit window in `window_minutes`; the
+// primary/secondary slot names have meant different windows across CLI versions,
+// so the label is always derived from the reported length.
+function windowName(min) {
+  if (min == null) return 'limit';
+  if (min % 10080 === 0) return `${min / 10080}w`;
+  if (min % 1440 === 0) return `${min / 1440}d`;
+  if (min % 60 === 0) return `${min / 60}h`;
+  return `${min}m`;
+}
 
 function updateTray() {
   if (!tray || !latestModel) return;
   const c = latestModel.providers.codex;
   const cl = latestModel.providers.claude;
-  const p = c.rate && c.rate.primary ? c.rate.primary.used_percent : null;
-  const s = c.rate && c.rate.secondary ? c.rate.secondary.used_percent : null;
+  const windows = (c.rate && c.rate.windows) || [];
+  const codexLine = windows.length
+    ? windows.map((w) => `${windowName(w.windowMinutes)}: ${fmtPct(w.usedPercent)}`).join('  ')
+    : '—';
+  const plan = (cl.subscription && cl.subscription.subscriptionType) || 'claude';
   const monthCost = '$' + latestModel.totals.monthCost.toFixed(2);
   tray.setToolTip(
     `AI Usage Dashboard\n` +
-    `Codex 5h: ${fmtPct(p)}  week: ${fmtPct(s)}\n` +
-    `Claude (max) today: ${(cl.today.total / 1e6).toFixed(1)}M tok\n` +
+    `Codex ${codexLine}\n` +
+    `Claude (${plan}) today: ${(cl.today.total / 1e6).toFixed(1)}M tok\n` +
     `This month est: ${monthCost}`
   );
 }
@@ -200,9 +219,33 @@ function createTray() {
   tray.on('double-click', () => createWindow());
 }
 
+// ---- monthly report ---------------------------------------------------------
+async function reportFor(month, provider) {
+  if (!latestModel) await refresh('ipc-report');
+  return buildMonthlyReport(latestEvents, month, { provider });
+}
+
 // ---- IPC --------------------------------------------------------------------
 ipcMain.handle('usage:get', async () => latestModel || (await refresh('ipc-get')));
 ipcMain.handle('usage:refresh', async () => refresh('ipc-refresh'));
+ipcMain.handle('report:get', async (_e, { month, provider } = {}) => reportFor(month, provider));
+ipcMain.handle('report:export', async (_e, { month, provider, metric } = {}) => {
+  const report = await reportFor(month, provider);
+  const suffix = provider && provider !== 'all' ? `-${provider}` : '';
+  const res = await dialog.showSaveDialog(win || undefined, {
+    title: '匯出月報 CSV',
+    defaultPath: `ai-usage-${report.month}${suffix}-${metric === 'cost' ? 'cost' : 'tokens'}.csv`,
+    filters: [{ name: 'CSV', extensions: ['csv'] }],
+  });
+  if (res.canceled || !res.filePath) return { ok: false, canceled: true };
+  try {
+    fs.writeFileSync(res.filePath, reportToCsv(report, metric), 'utf8');
+    return { ok: true, filePath: res.filePath };
+  } catch (e) {
+    console.error('[report] export failed:', e);
+    return { ok: false, error: e.message };
+  }
+});
 ipcMain.handle('app:autostart-get', () => isAutostart());
 ipcMain.handle('app:autostart-set', (_e, on) => applyAutostart(on));
 

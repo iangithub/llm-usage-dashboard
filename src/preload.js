@@ -9,6 +9,8 @@ contextBridge.exposeInMainWorld('api', {
     ipcRenderer.on('usage:update', handler);
     return () => ipcRenderer.removeListener('usage:update', handler);
   },
+  getReport: (month, provider) => ipcRenderer.invoke('report:get', { month, provider }),
+  exportReport: (month, provider, metric) => ipcRenderer.invoke('report:export', { month, provider, metric }),
   getAutostart: () => ipcRenderer.invoke('app:autostart-get'),
   setAutostart: (on) => ipcRenderer.invoke('app:autostart-set', on),
   onAutostartChanged: (cb) => {

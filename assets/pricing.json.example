@@ -1,7 +1,15 @@
 {
-  "_comment": "把這個檔複製成 pricing.json 即可覆寫預設模型單價。單位:USD / 1,000,000 tokens。key 以模型 id 子字串比對,最長相符者優先。只需列出想覆寫的項目。",
-  "gpt-5": { "input": 1.25, "output": 10, "cacheWrite": 1.25, "cacheRead": 0.125 },
-  "codex": { "input": 1.25, "output": 10, "cacheWrite": 1.25, "cacheRead": 0.125 },
-  "claude-opus": { "input": 15, "output": 75, "cacheWrite": 18.75, "cacheRead": 1.5 },
-  "claude-sonnet": { "input": 3, "output": 15, "cacheWrite": 3.75, "cacheRead": 0.3 }
+  "_comment": "把這個檔複製成 pricing.json 即可覆寫預設模型單價。單位:USD / 1,000,000 tokens。key 以模型 id 子字串比對,最長相符者優先(完全相同的 id 最優先)。只需列出想覆寫的項目。",
+  "_fields": "input=未命中快取的輸入; output=輸出(已含 reasoning/thinking,勿另外相加); cacheWrite5m=5 分鐘快取寫入(Anthropic 為 1.25x input); cacheWrite1h=1 小時快取寫入(Anthropic 為 2x input); cacheRead=快取命中。OpenAI 無快取寫入加價,省略 cacheWrite* 即以 input 計。",
+  "_sources": "Anthropic https://platform.claude.com/docs/en/about-claude/pricing / OpenAI https://developers.openai.com/api/docs/pricing",
+
+  "claude-opus-5": { "input": 5, "output": 25, "cacheWrite5m": 6.25, "cacheWrite1h": 10, "cacheRead": 0.5 },
+  "claude-fable-5": { "input": 10, "output": 50, "cacheWrite5m": 12.5, "cacheWrite1h": 20, "cacheRead": 1 },
+  "claude-sonnet-5": { "input": 2, "output": 10, "cacheWrite5m": 2.5, "cacheWrite1h": 4, "cacheRead": 0.2 },
+  "claude-haiku-4": { "input": 1, "output": 5, "cacheWrite5m": 1.25, "cacheWrite1h": 2, "cacheRead": 0.1 },
+
+  "gpt-5.6-sol": { "input": 4, "output": 20, "cacheRead": 0.4 },
+  "gpt-5.6-terra": { "input": 2, "output": 12, "cacheRead": 0.2 },
+  "gpt-5.3-codex": { "input": 1.75, "output": 14, "cacheRead": 0.175 },
+  "gpt-5": { "input": 1.25, "output": 10, "cacheRead": 0.125 }
 }
